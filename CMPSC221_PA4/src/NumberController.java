@@ -36,4 +36,13 @@ public class NumberController {
 		
 	}
 	
+	public boolean closer(int guess, int lastGuess) {
+		
+		if(Math.abs(guess - myNumber) < Math.abs(lastGuess - myNumber)) {
+			return true;
+		}
+		return false;
+		
+	}
+	
 }

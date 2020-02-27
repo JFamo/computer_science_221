@@ -10,6 +10,7 @@ public class GuessNumber extends JFrame {
 	private final JLabel labelProximity;
 	private final JTextField inputGuess;
 	private final JButton buttonPlayAgain;
+	private int lastGuess;
 	private NumberController number;
 		
 	public GuessNumber() {
@@ -38,16 +39,31 @@ public class GuessNumber extends JFrame {
 		GuessHandler guessHandler = new GuessHandler();
 		inputGuess.addActionListener(guessHandler);
 		
+		// Reset game states
+		resetGame();
+		
 		// Set frame display options
 		setLocationRelativeTo(null);
 		pack();
 		setVisible(true);
 	}
 	
+	public void resetGame() {
+		
+		inputGuess.setEditable(true);
+		getContentPane().setBackground(Color.LIGHT_GRAY);
+		labelProximity.setText("");
+		buttonPlayAgain.setVisible(false);
+		lastGuess = -99999;
+		
+	}
+	
 	public void triggerWin() {
 		
 		inputGuess.setEditable(false);
-		setBackground(Color.YELLOW);
+		getContentPane().setBackground(Color.YELLOW);
+		labelProximity.setText("Correct!");
+		buttonPlayAgain.setVisible(true);
 		
 	}
 	
@@ -61,27 +77,42 @@ public class GuessNumber extends JFrame {
 
 		public void actionPerformed(ActionEvent event) {
 			
+			// Handler for JTextField inputGuess
 			if(event.getSource() == inputGuess) {
 				
+				// Get guess
 				int guess = Integer.parseInt(inputGuess.getText());
+				
+				// Check temperature, whether we are hotter or colder
+				if(number.closer(guess, lastGuess)) {
+					getContentPane().setBackground(Color.RED);
+				}
+				else {
+					getContentPane().setBackground(Color.BLUE);
+				}
+				lastGuess = guess;
+				
+				// Check whether we are high low or correct
 				int result = number.checkGuess(guess);
 				if(result == 0) {
 					
-					System.out.println("Low!");
+					labelProximity.setText("Too Low!");
 					
 				}
 				else if(result == 1) {
 					
-					System.out.println("Correct!");
-					
+					triggerWin();
+	
 				}
 				else {
 					
-					System.out.println("High!");
+					labelProximity.setText("Too High!");
 					
 				}
 				
 			}
+			
+			pack();
 			
 		}
 		
