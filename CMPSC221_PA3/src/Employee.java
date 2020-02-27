@@ -43,7 +43,7 @@ public class Employee {
 	// Method to display employee object as string; takes no input and returns object description as String
 	public String toString() {
 		
-		return firstName + " " + lastName + "\nSocial Security Number: " + socialSecurityNumber + "\n" + compensationModel.toString() + "\n";
+		return firstName + " " + lastName + "\nSocial Security Number: " + socialSecurityNumber + "\n" + compensationModel + "\n";
 		
 	}
 	
