@@ -10,6 +10,11 @@ public class GuessNumber extends JFrame {
 	private final JLabel labelProximity;
 	private final JTextField inputGuess;
 	private final JButton buttonPlayAgain;
+	
+	private final JPanel firstRow;
+	private final JPanel secondRow;
+	private final JPanel thirdRow;
+	
 	private int lastGuess;
 	private NumberController number;
 		
@@ -29,11 +34,26 @@ public class GuessNumber extends JFrame {
 		// Create buttons
 		buttonPlayAgain = new JButton("Play Again");
 		
-		// Add to frame
-		add(labelInitial);
-		add(labelProximity);
-		add(inputGuess);
-		add(buttonPlayAgain);
+		// Create JPanel rows
+		firstRow = new JPanel();
+		secondRow = new JPanel();
+		thirdRow = new JPanel();
+		
+		// Add items to panels
+		firstRow.add(labelInitial);
+		secondRow.add(labelProximity);
+		thirdRow.add(inputGuess);
+		thirdRow.add(buttonPlayAgain);
+		
+		// Scale rows
+		firstRow.setSize(1024, 64);
+		secondRow.setSize(1024, 64);
+		thirdRow.setSize(1024, 128);
+		
+		// Add panels to flow layout
+		add(firstRow);
+		add(secondRow);
+		add(thirdRow);
 		
 		// Setup handlers
 		GuessHandler guessHandler = new GuessHandler();
@@ -44,7 +64,7 @@ public class GuessNumber extends JFrame {
 		
 		// Set frame display options
 		setLocationRelativeTo(null);
-		pack();
+		setSize(1024, 256);
 		setVisible(true);
 	}
 	
@@ -53,6 +73,7 @@ public class GuessNumber extends JFrame {
 		inputGuess.setEditable(true);
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		labelProximity.setText("");
+		labelInitial.setText("I have a number between 1 and 1000. Can you guess my number? Please enter your first guess.");
 		buttonPlayAgain.setVisible(false);
 		lastGuess = -99999;
 		
@@ -83,6 +104,9 @@ public class GuessNumber extends JFrame {
 				// Get guess
 				int guess = Integer.parseInt(inputGuess.getText());
 				
+				// Update text
+				labelInitial.setText("I have a number between 1 and 1000. Can you guess my number? Please enter your next guess.");
+				
 				// Check temperature, whether we are hotter or colder
 				if(number.closer(guess, lastGuess)) {
 					getContentPane().setBackground(Color.RED);
@@ -111,8 +135,6 @@ public class GuessNumber extends JFrame {
 				}
 				
 			}
-			
-			pack();
 			
 		}
 		
