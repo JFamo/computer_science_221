@@ -70,6 +70,9 @@ public class DrawingApplicationFrame extends JFrame
 
     // add status label
 	JLabel statusLabel = new JLabel("0,0");
+	
+	// add draw panel
+	DrawPanel drawPanel;
 	 
     // Constructor for DrawingApplicationFrame
     public DrawingApplicationFrame()
@@ -102,10 +105,19 @@ public class DrawingApplicationFrame extends JFrame
     	controlPanel.setLayout(new BorderLayout());
     	controlPanel.add(row1, BorderLayout.NORTH);
     	controlPanel.add(row2, BorderLayout.SOUTH);
+    	
+    	// Instantiate draw panel
+    	drawPanel = new DrawPanel();
+    	
+    	// Set defaults
+    	widthTextfield.setText("10");
+    	dashTextfield.setText("10");
+    	firstColor = Color.DARK_GRAY;
+    	secondColor = Color.LIGHT_GRAY;
 
         // add topPanel to North, drawPanel to Center, and statusLabel to South
     	add(controlPanel, BorderLayout.NORTH);
-    	add(new DrawPanel(), BorderLayout.CENTER);
+    	add(drawPanel, BorderLayout.CENTER);
     	add(statusLabel, BorderLayout.SOUTH);
     	
     	// make visible again for delay
@@ -114,15 +126,51 @@ public class DrawingApplicationFrame extends JFrame
         setVisible(true);
         
         //add listeners and event handlers
+        ButtonHandler buttonHandler = new ButtonHandler();
+        undoButton.addActionListener(buttonHandler);
+        clearButton.addActionListener(buttonHandler);
+        firstColorButton.addActionListener(buttonHandler);
+        secondColorButton.addActionListener(buttonHandler);
+     
     }
 
     // Create event handlers, if needed
+    private class ButtonHandler implements ActionListener {
+    	
+    	public void actionPerformed(ActionEvent event) {
+    		
+    		if(event.getSource() == undoButton) {
+    			drawPanel.undo();
+    		}
+    		else if(event.getSource() == clearButton) {
+    			drawPanel.clear();
+    		}
+    		else if(event.getSource() == firstColorButton) {
+    			firstColor = JColorChooser.showDialog(DrawingApplicationFrame.this, "Choose a Color", firstColor);
+    			if(firstColor == null) {
+    				firstColor = Color.black;
+    			}
+    			firstColorButton.setBackground(firstColor);
+    		}
+    		else {
+    			secondColor = JColorChooser.showDialog(DrawingApplicationFrame.this, "Choose a Color", secondColor);
+    			if(secondColor == null) {
+    				secondColor = Color.lightGray;
+    			}
+    			secondColorButton.setBackground(secondColor);
+    		}
+    		
+    	}
+    	
+    }
 
     // Create a private inner class for the DrawPanel.
     private class DrawPanel extends JPanel
     {
     	
     	public ArrayList<MyShapes> shapes;
+    	public Paint paint;
+    	public Stroke stroke;
 
         public DrawPanel()
         {
@@ -152,12 +200,66 @@ public class DrawingApplicationFrame extends JFrame
             
         }
 
-
+        public void undo() {
+        	if(shapes.size() > 0) {
+        		shapes.remove(shapes.size() - 1);
+        	}
+        	repaint();
+        }
+        
+        public void clear() {
+        	shapes.clear();
+        	repaint();
+        }
+        
         private class MouseHandler extends MouseAdapter implements MouseMotionListener
         {
-
+        	
             public void mousePressed(MouseEvent event)
             {
+            	// Get line width and dash length
+            	int lineWidth;
+            	try {
+            		lineWidth = Integer.parseInt(widthTextfield.getText());
+            	}catch(NumberFormatException e) {
+            		lineWidth = 10;
+            	}
+            	float[] dashLength = new float[1];
+            	try{
+            		dashLength[0] = Float.parseFloat(dashTextfield.getText());
+            	}catch(NumberFormatException e) {
+            		dashLength[0] = 10.0f;
+            	}
+            	
+            	// Set paint
+            	if(gradientCheckbox.isSelected()) {
+            		paint = new GradientPaint(0, 0, firstColor, 50, 50, secondColor, true);
+            	}
+            	else {
+            		paint = firstColor;
+            	}
+            	
+            	// Set stroke
+            	if(dashedCheckbox.isSelected()) {
+            		stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10, dashLength, 0);
+            	}
+            	else {
+            		stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            	}
+            	
+            	// Find draw type
+            	if(shapeCombobox.getItemAt(shapeCombobox.getSelectedIndex()) == "Line") {
+            		shapes.add(new MyLine(event.getPoint(), event.getPoint(), paint, stroke));
+            	}
+            	else if(shapeCombobox.getItemAt(shapeCombobox.getSelectedIndex()) == "Oval") {
+            		shapes.add(new MyOval(event.getPoint(), event.getPoint(), paint, stroke, filledCheckbox.isSelected()));
+            	}
+            	else {   
+            		shapes.add(new MyRectangle(event.getPoint(), event.getPoint(), paint, stroke, filledCheckbox.isSelected()));
+            	}
+            	
+            	System.out.println(shapes);
+            	repaint();
             	
             }
 
@@ -169,7 +271,8 @@ public class DrawingApplicationFrame extends JFrame
             @Override
             public void mouseDragged(MouseEvent event)
             {
-            	
+            	shapes.get(shapes.size() - 1).setEndPoint(event.getPoint());
+            	repaint();
             }
 
             @Override
