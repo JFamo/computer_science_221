@@ -1,5 +1,15 @@
+/**
+ * This program implements a GUI for a guess-the-number game where the user tries to guess a randomly generated integer between 1 and 1000.
+ * 
+ * @author Joshua Famous jjf5899@psu.edu
+ * 
+ * 2/27/2020
+ *
+ */
+
 import java.util.Random;
 
+// NumberController sets and saves a random number between 1 and 1000.
 public class NumberController {
 	
 	private int myNumber;
@@ -36,6 +46,7 @@ public class NumberController {
 		
 	}
 	
+	// Method to return whether this guess is closer than last. Takes integer params for current and previous guess and returns a boolean
 	public boolean closer(int guess, int lastGuess) {
 		
 		if(Math.abs(guess - myNumber) < Math.abs(lastGuess - myNumber)) {

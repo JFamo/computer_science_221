@@ -1,23 +1,37 @@
+/**
+ * This program implements a GUI for a guess-the-number game where the user tries to guess a randomly generated integer between 1 and 1000.
+ * 
+ * @author Joshua Famous jjf5899@psu.edu
+ * 
+ * 2/27/2020
+ *
+ */
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+// The GuessNumber class implements the GUI for the program and extends JFrame
 public class GuessNumber extends JFrame {
 	
+	// Declare GUI elements
 	private final JLabel labelInitial;
 	private final JLabel labelProximity;
 	private final JTextField inputGuess;
 	private final JButton buttonPlayAgain;
 	
+	// Declare panels
 	private final JPanel firstRow;
 	private final JPanel secondRow;
 	private final JPanel thirdRow;
 	
+	// Declare other properties
 	private int lastGuess;
 	private NumberController number;
-		
+	
+	// Constructor for GuessNumber configures GUI
 	public GuessNumber() {
 		
 		// Create frame
@@ -58,6 +72,8 @@ public class GuessNumber extends JFrame {
 		// Setup handlers
 		GuessHandler guessHandler = new GuessHandler();
 		inputGuess.addActionListener(guessHandler);
+		ReplayHandler replayHandler = new ReplayHandler();
+		buttonPlayAgain.addActionListener(replayHandler);
 		
 		// Reset game states
 		resetGame();
@@ -68,6 +84,7 @@ public class GuessNumber extends JFrame {
 		setVisible(true);
 	}
 	
+	// This method resets the game state to play again, takes no arguments, and returns nothing
 	public void resetGame() {
 		
 		inputGuess.setEditable(true);
@@ -79,6 +96,7 @@ public class GuessNumber extends JFrame {
 		
 	}
 	
+	// This method sets the game state to its win condition, takes no arguments, and returns nothing
 	public void triggerWin() {
 		
 		inputGuess.setEditable(false);
@@ -88,12 +106,26 @@ public class GuessNumber extends JFrame {
 		
 	}
 	
+	// This mutator sets the number controller for the game, takes a NumberController argument, and returns nothing
 	public void setNumberController(NumberController number) {
 		
 		this.number = number;
 		
 	}
 	
+	// Nested class ReplayHandler handles plain button event for Play Again and resets game state
+	private class ReplayHandler implements ActionListener{
+		
+		public void actionPerformed(ActionEvent event) {
+			
+			resetGame();
+			number.setNumber(1000);
+			
+		}
+		
+	}
+	
+	// Nested class GuessHandler handles JTextField events
 	private class GuessHandler implements ActionListener {
 
 		public void actionPerformed(ActionEvent event) {
