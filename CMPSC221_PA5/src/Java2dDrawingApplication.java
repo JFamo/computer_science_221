@@ -1,17 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This program implements a drawing application using a variety of shapes, paint types, and strokes with additional functionality to undo and clear from a list of shapes.
+ * 
+ * @author Joshua Famous jjf5899@psu.edu
+ * 
+ * 3/19/2020
+ *
  */
-
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-/**
- *
- * @author acv
- */
+// This class runs the drawing application
 public class Java2dDrawingApplication
 {
 

@@ -1,7 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This program implements a drawing application using a variety of shapes, paint types, and strokes with additional functionality to undo and clear from a list of shapes.
+ * 
+ * @author Joshua Famous jjf5899@psu.edu
+ * 
+ * 3/19/2020
+ *
  */
 
 import java.awt.BasicStroke;
@@ -30,10 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**
- *
- * @author acv
- */
+// This class implements the frame for the drawing application with nested subclasses for other features
 public class DrawingApplicationFrame extends JFrame
 {
 
@@ -134,17 +134,20 @@ public class DrawingApplicationFrame extends JFrame
      
     }
 
-    // Create event handlers, if needed
+    // Handle button events
     private class ButtonHandler implements ActionListener {
     	
     	public void actionPerformed(ActionEvent event) {
     		
+    		// Undo
     		if(event.getSource() == undoButton) {
     			drawPanel.undo();
     		}
+    		// Clear
     		else if(event.getSource() == clearButton) {
     			drawPanel.clear();
     		}
+    		// Color Picker Buttons
     		else if(event.getSource() == firstColorButton) {
     			firstColor = JColorChooser.showDialog(DrawingApplicationFrame.this, "Choose a Color", firstColor);
     			if(firstColor == null) {
@@ -200,6 +203,7 @@ public class DrawingApplicationFrame extends JFrame
             
         }
 
+        // Undo function, removes last shape
         public void undo() {
         	if(shapes.size() > 0) {
         		shapes.remove(shapes.size() - 1);
@@ -207,11 +211,13 @@ public class DrawingApplicationFrame extends JFrame
         	repaint();
         }
         
+        // Clear function, removes all shapes
         public void clear() {
         	shapes.clear();
         	repaint();
         }
         
+        // Handler for mouse movement and action events
         private class MouseHandler extends MouseAdapter implements MouseMotionListener
         {
         	
